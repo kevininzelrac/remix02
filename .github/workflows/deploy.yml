@@ -56,14 +56,16 @@ jobs:
           echo "::set-output name=lambda_version::$latest_version"
 
       - name: Get CloudFront Distribution Config
+        id: get_cf_config
         run: |
-          aws cloudfront get-distribution-config --id ${{ env.CLOUDFRONT_DISTRIBUTION_ID }} | jq '.DistributionConfig' > cf_config.json
+          aws cloudfront get-distribution-config --id ${{ env.CLOUDFRONT_DISTRIBUTION_ID }} > cf_config.json
+          echo "::set-output name=etag::$(jq -r '.ETag' cf_config.json)"
 
       - name: Update CloudFront Config
         run: |
-          jq --arg lambdaArn ${{ steps.get_lambda_version.outputs.lambda_version }} '.DefaultCacheBehavior.LambdaFunctionAssociations.Items[0].LambdaFunctionARN = $lambdaArn' cf_config.json > updated_cf_config.json
+          jq --arg lambdaArn ${{ steps.get_lambda_version.outputs.lambda_version }} '.DistributionConfig.DefaultCacheBehavior.LambdaFunctionAssociations.Items[0].LambdaFunctionARN = $lambdaArn' cf_config.json > updated_cf_config.json
 
       - name: Update CloudFront Distribution
         run: |
-          etag=$(jq -r '.ETag' cf_config.json)
+          etag=${{ steps.get_cf_config.outputs.etag }}
           aws cloudfront update-distribution --id ${{ env.CLOUDFRONT_DISTRIBUTION_ID }} --distribution-config file://updated_cf_config.json --if-match $etag
