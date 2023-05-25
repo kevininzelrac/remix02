@@ -61,5 +61,5 @@ jobs:
         id: update_cloudfront_config
         run: |
           lambda_version=${{ steps.create_lambda_version.outputs.lambda_version }}
-          jq --arg version "$lambda_version" '.DistributionConfig.DefaultCacheBehavior.LambdaFunctionAssociations.Items[0].LambdaFunctionARN = (.DistributionConfig.DefaultCacheBehavior.LambdaFunctionAssociations.Items[0].LambdaFunctionARN | sub(":version"; ":$version"))' ${{ steps.get_cloudfront_config.outputs.config_file }} > updated_config.json
+          jq --arg version "$lambda_version" '.DistributionConfig.CallerReference = "update-config" | .DistributionConfig.DefaultCacheBehavior.LambdaFunctionAssociations.Items[0].LambdaFunctionARN = (.DistributionConfig.DefaultCacheBehavior.LambdaFunctionAssociations.Items[0].LambdaFunctionARN | sub(":version"; ":$version"))' ${{ steps.get_cloudfront_config.outputs.config_file }} > updated_config.json
           aws cloudfront update-distribution --id ${{ env.CLOUDFRONT_DISTRIBUTION_ID }} --if-match $(jq -r .ETag ${{ steps.get_cloudfront_config.outputs.config_file }}) --distribution-config file://updated_config.json
