@@ -63,7 +63,7 @@ jobs:
 
       - name: Update CloudFront Config
         run: |
-          jq --arg lambdaArn ${{ steps.get_lambda_version.outputs.lambda_version }} '.DistributionConfig.DefaultCacheBehavior.LambdaFunctionAssociations.Items[0].LambdaFunctionARN = $lambdaArn' cf_config.json > updated_cf_config.json
+          jq --arg lambdaArn ${{ steps.get_lambda_version.outputs.lambda_version }} '.DistributionConfig.DefaultCacheBehavior.LambdaFunctionAssociations.Items[0].LambdaFunctionARN = $lambdaArn' cf_config.json | jq '.DistributionConfig' > updated_cf_config.json
 
       - name: Update CloudFront Distribution
         run: |
