@@ -24,7 +24,7 @@ export default function App() {
         <Links />
       </head>
       <body>
-        <h1>Remix 0.1.11</h1>
+        <h1>Remix 0.1.12</h1>
         <nav>
           <NavLink to="/">Home</NavLink>
           <NavLink to="/Portfolio">Portfolio</NavLink>
