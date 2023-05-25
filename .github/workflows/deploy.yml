@@ -42,6 +42,9 @@ jobs:
           zip -r function.zip build node_modules server.js tsconfig.json
           aws lambda update-function-code --function-name ${{ env.LAMBDA_FUNCTION_NAME }} --zip-file fileb://function.zip --publish
 
+      - name: Wait for Lambda function update to complete
+        run: sleep 30
+
       - name: Create new Lambda function version
         id: create_lambda_version
         run: |
