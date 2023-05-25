@@ -9,7 +9,7 @@ env:
   CLOUDFRONT_DISTRIBUTION_ID: "E3BG9URNI98XSL"
 
 jobs:
-  AWS CloudFont / S3 / Lambda:Edge:
+  Build-Deploy:
     runs-on: ubuntu-latest
 
     steps:
