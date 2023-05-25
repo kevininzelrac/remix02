@@ -52,12 +52,12 @@ jobs:
       - name: Get Latest Lambda Version
         id: get_lambda_version
         run: |
-          latest_version=$(aws lambda list-versions-by-function --function-name ${{ env.LAMBDA_NAME }} --query 'Versions[-1].FunctionArn' --output text)
+          latest_version=$(aws lambda list-versions-by-function --function-name ${{ env.LAMBDA_FUNCTION_NAME }} --query 'Versions[-1].FunctionArn' --output text)
           echo "::set-output name=lambda_version::$latest_version"
 
       - name: Get CloudFront Distribution Config
         run: |
-          aws cloudfront get-distribution-config --id ${{ env.DISTRIBUTION_ID }} | jq '.DistributionConfig' > cf_config.json
+          aws cloudfront get-distribution-config --id ${{ env.CLOUDFRONT_DISTRIBUTION_ID }} | jq '.DistributionConfig' > cf_config.json
 
       - name: Update CloudFront Config
         run: |
@@ -66,4 +66,4 @@ jobs:
       - name: Update CloudFront Distribution
         run: |
           etag=$(jq -r '.ETag' cf_config.json)
-          aws cloudfront update-distribution --id ${{ env.DISTRIBUTION_ID }} --distribution-config file://updated_cf_config.json --if-match $etag
+          aws cloudfront update-distribution --id ${{ env.CLOUDFRONT_DISTRIBUTION_ID }} --distribution-config file://updated_cf_config.json --if-match $etag
