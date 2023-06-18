@@ -2,7 +2,8 @@ name: AWS Build and Deploy
 on:
   push:
     branches:
-      - dev
+      - render
+      - vercel
 
 jobs:
   Build-Deploy:
