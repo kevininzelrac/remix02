@@ -18,10 +18,10 @@ jobs:
           node-version: "16"
 
       - name: Installing dependencies
-        run: npm install --production
+        run: npm install
 
       - name: Building project
-        run: npm run build
+        run: npm run build && npm prune --omit=dev
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1-node16
