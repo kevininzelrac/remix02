@@ -2,5 +2,6 @@
 /// <reference types="@remix-run/node" />
 
 interface Window {
-  __INITIAL_STATE__: any;
+  //__INITIAL_STATE__: any;
+  ENV: any;
 }

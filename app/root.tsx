@@ -10,7 +10,8 @@ import {
 } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { Amplify } from "aws-amplify";
-import awsconfig from "./aws-export";
+import awsconfig from "./export.server";
+
 Amplify.configure(awsconfig);
 
 import mainStyles from "~/styles/index.css";

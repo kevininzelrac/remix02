@@ -2,11 +2,12 @@
   "private": true,
   "sideEffects": false,
   "scripts": {
-    "build": "remix build && npm ci --omit=dev",
-    "dev": "npm-run-all build --parallel \"dev:*\"",
+    "devBuild": "remix build",
+    "dev": "npm-run-all devBuild --parallel \"dev:*\"",
     "dev:node": "cross-env NODE_ENV=development nodemon --require dotenv/config ./server.js --watch ./server.js",
     "dev:remix": "remix watch",
-    "start": "cross-env NODE_ENV=production node ./server.js",
+    "build": "remix build && npm prune --omit=dev",
+    "start": "cross-env NODE_ENV=production node --require dotenv/config ./server.js",
     "typecheck": "tsc"
   },
   "dependencies": {
@@ -19,6 +20,7 @@
     "aws-amplify": "^5.2.7",
     "compression": "^1.7.4",
     "cross-env": "^7.0.3",
+    "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "isbot": "^3.6.8",
     "morgan": "^1.10.0",
