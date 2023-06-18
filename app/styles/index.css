@@ -1,51 +1,111 @@
+@import url("https://fonts.googleapis.com/css2?family=Audiowide&family=Gruppo&family=Major+Mono+Display&family=Orbitron&display=swap");
+
 * {
   margin: 0;
   padding: 0;
+  text-decoration: none;
+  list-style: none;
+  font-size: 1rem;
+  border: none;
+}
+
+:root {
+  --width: 90px;
+  --height: 20px;
+
+  --avatarSmall: 35px;
+
+  --margin: 2px 10px;
+  --padding: 4px 0px;
+  --time: 300ms;
+
+  /* --rootW: 600px; */
+  --mainWidth: clamp(100px, 90vw, 600px);
+  --imgWidth: clamp(140px, 40vw, 160px);
+
+  --anthracite: #292929;
+  --blue: #336699;
+  --shade01: 0px 5px 20px rgba(22, 22, 22, 0.4);
+  --shade02: 0px 3px 10px rgba(22, 22, 22, 0.2);
+  --shade03: 0px 2px 3px rgba(22, 22, 22, 0.2);
+  --gradient01: linear-gradient(#336699, #132140);
+
+  --orbitron: "Orbitron", sans-serif;
+  --audiowide: "Audiowide", cursive;
+  --majormono: "Major Mono Display", monospace;
+  --gruppo: "Gruppo", cursive;
+}
+
+ul {
+  list-style: none;
+}
+
+a {
+  text-decoration: none;
+}
+
+button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 80px;
+  height: 30px;
+  padding: 0;
+  margin: 0;
+  text-align: center;
+  text-decoration: none;
+  font-size: 1rem;
+  cursor: pointer;
+  color: var(--anthracite);
+  background-color: ghostwhite;
+  border: 2px solid #336699;
+  transition-duration: 0.2s;
+}
+button:hover {
+  background-color: #336699;
+  color: ghostwhite;
 }
 
 body {
-  font-family: Arial, Helvetica, sans-serif;
-  width: auto;
-  min-height: 100vh;
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: auto;
+  height: fit-content;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
   background-color: ghostwhite;
   color: #383e42;
+  font-family: Helvetica, sans-serif;
 }
 
 h1 {
-  font-family: monospace;
-  font-size: 5vw;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  margin: 10px 0;
-}
-
-nav {
-  width: 50vw;
   display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-  margin: 10px 0;
-}
-
-nav a {
-  font-weight: bold;
-  text-decoration: none;
-  color: midnightblue;
-}
-
-nav a:hover {
-  color: dimgrey;
-}
-
-nav a.active {
-  color: crimson;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 80px;
+  margin: 0;
+  padding: 0;
+  text-transform: uppercase;
+  font-family: var(--majormono);
+  font-size: clamp(1rem, 8vw, 3rem);
+  letter-spacing: 4px;
+  text-align: center;
+  background: var(--gradient01);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: var(--shade03);
 }
 
 main {
-  width: 50vw;
+  min-width: 350px;
+  width: 80%;
+  max-width: 600px;
   height: 100%;
 }
 
@@ -56,15 +116,36 @@ h2 {
 section {
   margin: 5px 0;
 }
+form input[type="text"],
+form input[type="password"] {
+  margin: 5px;
+  padding: 0;
+  font-size: 1rem;
+}
 
 footer {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  margin-top: auto;
   padding: 10px 0;
   background-color: #292929;
   border-top: 1px solid white;
-  color: ghostwhite;
-  width: 100vw;
-  margin-top: auto;
-  display: flex;
-  flex-direction: column;
+}
+footer p {
   align-items: center;
+  font-size: 0.8rem;
+  font-weight: lighter;
+  color: ghostwhite;
+  width: fit-content;
+}
+
+@media (max-width: 768px) {
+  footer {
+    display: none;
+  }
 }

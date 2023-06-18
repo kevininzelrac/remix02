@@ -1,0 +1,39 @@
+import { createAuthLink } from "aws-appsync-auth-link";
+import { createSubscriptionHandshakeLink } from "aws-appsync-subscription-link";
+
+import {
+  ApolloClient,
+  InMemoryCache,
+  HttpLink,
+  ApolloLink,
+} from "@apollo/client";
+
+const region = process.env.AWS_REGION as any;
+const url = process.env.AWS_APPSYNC_GRAPHQLENDPOINT as any;
+const apiKey = process.env.AWS_APPSYNC_KEY as any;
+
+const authApi: any = {
+  type: "API_KEY",
+  apiKey: apiKey,
+};
+
+const authCognito: any = {
+  type: "AMAZON_COGNITO_USER_POOLS",
+  jwtToken:
+    "eyJraWQiOiJUY0l1c24zeDhvRGJ0b0FTVWVaY3FcL29WVXlyXC9PcnVudkFoV3VGeFh2U2s9IiwiYWxnIjoiUlMyNTYifQ.eyJzdWIiOiIyMDVjNjllYy0xMGYxLTcwM2QtZDUxNy0zMWVjNDI4YTVkM2UiLCJjb2duaXRvOmdyb3VwcyI6WyJhZG1pbiJdLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAuZXUtbm9ydGgtMS5hbWF6b25hd3MuY29tXC9ldS1ub3J0aC0xX3oyc2x6cmNtRSIsImNsaWVudF9pZCI6IjI1MzJvbHA5NXIwOHF2ajEydThqZjhudnZvIiwib3JpZ2luX2p0aSI6IjdiYTM3N2FhLWJkMmQtNDBlNC04MjMyLWYyMWExZWI3OWVmNiIsImV2ZW50X2lkIjoiNGQ5NTdmZmUtYjdkYi00NTg4LTk2M2ItZTM1NDY0NzZlODE3IiwidG9rZW5fdXNlIjoiYWNjZXNzIiwic2NvcGUiOiJhd3MuY29nbml0by5zaWduaW4udXNlci5hZG1pbiIsImF1dGhfdGltZSI6MTY4NzA1MzU1MCwiZXhwIjoxNjg3MDUzODUwLCJpYXQiOjE2ODcwNTM1NTAsImp0aSI6IjQzMjkwZjNlLTgwZWUtNGJhYS04ZjIzLTZjZWNiMTJkZjYyMiIsInVzZXJuYW1lIjoiMjA1YzY5ZWMtMTBmMS03MDNkLWQ1MTctMzFlYzQyOGE1ZDNlIn0.S0l_s2ruqPNeaWoRNKBV4muFdP_ugGS_xjn4XB0FOJeUPvdOfs0tOc1oav6Rhm5Zj1ysCborJYw4IUzPScXhZkJF4TLcf_g2_lIuYwlB0moyuCRgqt-MbVlEhFRMObjt8GqQngwtIfSUKPDxAjbVvow9MB8M827bzsTTEInOxDQhx40HZbO24JLOm_3DPdE2NYOaG4oB6pro9e8CFHNyVGyBAl1IwPI1eSXRsDr3zFRV_WpB7XvnA4kUr3XrvfDw6UczrjKmSm1k0TlxNcBNI5CdbsaP2s0kOl3YqsgrGEd2ixhDWB38Zv-szvR5ovnTGxjwjCspQGXwcAtfvh1j0w",
+};
+const httpLink = new HttpLink({ uri: url });
+
+const link = ApolloLink.from([
+  createAuthLink({ url, region, auth: authCognito }),
+  createSubscriptionHandshakeLink({ url, region, auth: authCognito }, httpLink),
+]);
+
+export const client = new ApolloClient({
+  link,
+  cache: new InMemoryCache(),
+  /*     headers: {
+    authorization:
+      "eyJraWQiOiJUY0l1c24zeDhvRGJ0b0FTVWVaY3FcL29WVXlyXC9PcnVudkFoV3VGeFh2U2s9IiwiYWxnIjoiUlMyNTYifQ.eyJzdWIiOiIyMDVjNjllYy0xMGYxLTcwM2QtZDUxNy0zMWVjNDI4YTVkM2UiLCJjb2duaXRvOmdyb3VwcyI6WyJhZG1pbiJdLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAuZXUtbm9ydGgtMS5hbWF6b25hd3MuY29tXC9ldS1ub3J0aC0xX3oyc2x6cmNtRSIsImNsaWVudF9pZCI6IjI1MzJvbHA5NXIwOHF2ajEydThqZjhudnZvIiwib3JpZ2luX2p0aSI6Ijk5MWQwNTZlLWJkZTAtNGFmZi1hOWQwLTNmODk5YjQyNzRjMCIsImV2ZW50X2lkIjoiZDk4ODY1NjgtYTkzMC00ZGQ1LTgzNTQtYWYzYzg2MGM5NDNkIiwidG9rZW5fdXNlIjoiYWNjZXNzIiwic2NvcGUiOiJhd3MuY29nbml0by5zaWduaW4udXNlci5hZG1pbiIsImF1dGhfdGltZSI6MTY4NzA0Nzk2NiwiZXhwIjoxNjg3MDQ4MjY2LCJpYXQiOjE2ODcwNDc5NjYsImp0aSI6IjIzZmFkOGNkLTRiMWUtNGU5Zi05YjJmLWQ2YjFmMGZiMWEwMCIsInVzZXJuYW1lIjoiMjA1YzY5ZWMtMTBmMS03MDNkLWQ1MTctMzFlYzQyOGE1ZDNlIn0.MBi6evBwD0n6UtE9SBn6VaZVwnX0GWC9zS6CPJypdnyq46ZsJaLj8RXzP_6Pazm7IlLco6Tac57cvlf08KWEkhDXHKx7dzsmbxvdzHq7AfAhQlf_HZ12CmdnZzKkJZAHIMaMtfMbjqoqr-9NvDsKUYpARW1WpJH4lXlngvszFNqJYfA_dYL6KOz78TJFk2wUPnJrYM-y7f7IJc8A3kAfAixBsyLJhDV-pK-uRxT0rBAa7VyrgazPMQtLw1cF4xl-tATFVxQjPHqxnmnIBnZ504UBQfiV8C63czR7HrTPIOCsmOPzec1d_eWbbQJeNuJRvJhoLjUiqFbUfVRFsQM8ZQ",
+  }, */
+});
