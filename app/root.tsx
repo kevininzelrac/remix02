@@ -58,7 +58,7 @@ export default function App() {
       <body>
         <h1>
           Remix
-          <small>0.1.12</small>
+          <small>0.1.13</small>
         </h1>
         <Nav data={posts} user={user} />
         <Outlet />
