@@ -2,10 +2,10 @@
   "private": true,
   "sideEffects": false,
   "scripts": {
-    "devBuild": "remix build",
-    "dev": "npm-run-all devBuild --parallel \"dev:*\"",
+    "dev": "npm-run-all build --parallel \"dev:*\"",
     "dev:node": "cross-env NODE_ENV=development nodemon --require dotenv/config ./server.js --watch ./server.js",
     "dev:remix": "remix watch",
+    "try": "remix build && npm prune --omit=dev",
     "build": "remix build",
     "start": "cross-env NODE_ENV=production node --require dotenv/config ./server.js",
     "typecheck": "tsc"
