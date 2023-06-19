@@ -2,12 +2,9 @@ import { useFetcher, useLoaderData, useRevalidator } from "@remix-run/react";
 import { redirect } from "@remix-run/node";
 import { useEffect, useRef } from "react";
 
-import styles from "~/styles/messenger.css";
-import { API, GraphQLSubscription, graphqlOperation } from "@aws-amplify/api";
-//import {API} from "@aws-amplify/api"
-//import { GRAPHQL_AUTH_MODE } from "@aws-amplify/api";
+import { API, GraphQLSubscription } from "@aws-amplify/api";
 
-import { addMessage, getUserMessages } from "~/appsync.server";
+import { addMessage, getUserMessages, getUser } from "~/appsync.server";
 
 interface message {
   id: string;
@@ -19,25 +16,25 @@ interface message {
 }
 
 const subscription = `
-  subscription MySubscription($to: String!) {
-    onAddMessage(to: $to) {
-      date
-      from
-      id
-      message
-      status
-      to
-    }
+subscription MySubscription($to: String!) {
+  onAddMessage(to: $to) {
+    date
+    from
+    id
+    message
+    status
+    to
   }
+}
 `;
 
+import styles from "~/styles/messenger.css";
 export let links = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
-export const loader = async ({ request, context }: any) => {
-  const { jwtToken, user }: any = context;
-  //const { user, jwtToken }: any = await getUser({ request });
+export const loader = async ({ request }: any) => {
+  const { user, jwtToken }: any = await getUser({ request });
   if (!user) {
     return redirect("/signin");
   }
@@ -50,9 +47,8 @@ export const loader = async ({ request, context }: any) => {
   };
 };
 
-export let action = async ({ request, context }: any) => {
-  const { jwtToken }: any = context;
-  //const { jwtToken }: any = await getUser({ request });
+export let action = async ({ request }: any) => {
+  const { jwtToken }: any = await getUser({ request });
   const formData = await request.formData();
   return await addMessage({ request, formData, jwtToken });
 };
@@ -81,8 +77,6 @@ export default function Messenger() {
         authMode: "AWS_LAMBDA",
         authToken: jwtToken,
       }).subscribe({
-        //next: ({ value }: any) => SetNewMessage(value.data.onAddMessage),
-        //next: ({ value }: any) => console.log(value),
         next: () => revalidator.revalidate(),
         error: (error: any) => console.log("SUBSCRIBE ERROR : ", error),
       });

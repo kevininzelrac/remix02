@@ -1,16 +1,13 @@
 import {
-  Links,
-  LiveReload,
   Meta,
+  Links,
   Outlet,
   Scripts,
-  ScrollRestoration,
+  LiveReload,
   useLoaderData,
-  useSearchParams,
+  ScrollRestoration,
 } from "@remix-run/react";
-import { useEffect, useState } from "react";
 import { Amplify } from "aws-amplify";
-import awsconfig from "./export.server";
 
 Amplify.configure(awsconfig);
 
@@ -28,25 +25,29 @@ export let links = () => {
 };
 
 import Nav from "./components/nav/nav";
-import { getNav } from "./appsync.server";
-import { graph } from "./graphql.server";
+import { getNav, getUser } from "./appsync.server";
+import Footer from "./components/footer/footer";
+import awsconfig from "./awsconfig";
 
-export const loader = async ({ context, request }: any) => {
-  const { user }: any = context;
-  //await graph();
-  //const { user }: any = await getUser({ request });
+export const loader = async ({ request }: any) => {
+  const ENV = {
+    AWS_REGION: process.env.AWS_REGION,
+    AWS_APPSYNC_GRAPHQLENDPOINT: process.env.AWS_APPSYNC_GRAPHQLENDPOINT,
+    AWS_APPSYNC_KEY: process.env.AWS_APPSYNC_KEY,
+    AWS_APPSYNC_AUTHENTICATIONTYPE: "API_KEY",
+    USER_POOL_ID: process.env.USER_POOL_ID,
+    USER_POOL_WEB_CLIENT_ID: process.env.USER_POOL_WEB_CLIENT_ID,
+    STRIPE_PUBLIC_KEY: process.env.STRIPE_PUBLIC_KEY,
+    STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
+  };
+  const { user }: any = await getUser({ request });
   const posts = await getNav(request);
-  return { user, posts };
+  return { ENV, user, posts };
 };
 
 export default function App() {
-  const { user, posts }: any = useLoaderData();
-  const [isOpen, setIsOpen] = useState("");
-  const [searchParams] = useSearchParams();
+  const { ENV, user, posts }: any = useLoaderData();
 
-  useEffect(() => {
-    searchParams.get("modal") === "signin" && setIsOpen("signin");
-  }, [searchParams]);
   return (
     <html lang="en">
       <head>
@@ -63,17 +64,14 @@ export default function App() {
         <Nav data={posts} user={user} />
         <Outlet />
         <ScrollRestoration />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.ENV = ${JSON.stringify(ENV)}`,
+          }}
+        />
         <Scripts />
         <LiveReload />
-        <footer>
-          <p>Remix - Server Side Rendering</p>
-          <p>
-            Serverless Architecture - AWS CloudFront Distribution - S3 Bucket
-            Frontent
-          </p>
-          <p>Lambda/Edge - GraphQL - AppSync - DynamoDb Backend</p>
-          <p>Web & Mobile App - built by Kevin Inzelrac</p>
-        </footer>
+        <Footer />
       </body>
     </html>
   );

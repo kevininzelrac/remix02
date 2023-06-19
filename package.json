@@ -7,28 +7,28 @@
     "dev:remix": "remix watch",
     "try": "remix build && npm prune --omit=dev",
     "build": "remix build",
-    "start": "cross-env NODE_ENV=production node --require dotenv/config ./server.js",
+    "start": "NODE_ENV=production node ./server.js",
     "typecheck": "tsc"
   },
   "dependencies": {
+    "@vendia/serverless-express": "^4.10.3",
     "@remix-run/express": "^1.17.1",
     "@remix-run/node": "^1.17.1",
+    "compression": "^1.7.4",
+    "express": "^4.18.2",
+    "morgan": "^1.10.0",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
     "@remix-run/react": "^1.17.1",
     "@stripe/react-stripe-js": "^2.1.0",
     "@stripe/stripe-js": "^1.54.0",
-    "@vendia/serverless-express": "^4.10.3",
     "aws-amplify": "^5.2.7",
-    "compression": "^1.7.4",
     "cross-env": "^7.0.3",
-    "dotenv": "^16.3.1",
-    "express": "^4.18.2",
     "isbot": "^3.6.8",
-    "morgan": "^1.10.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "stripe": "^12.9.0"
-  },
-  "devDependencies": {
+    "stripe": "^12.9.0",
     "@remix-run/dev": "^1.17.1",
     "@remix-run/eslint-config": "^1.17.1",
     "@types/compression": "^1.7.2",

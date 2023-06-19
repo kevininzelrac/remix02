@@ -1,12 +1,12 @@
 const serverlessExpress = require("@vendia/serverless-express");
-const path = require("path");
-
 const { createRequestHandler } = require("@remix-run/express");
 const { installGlobals } = require("@remix-run/node");
 const compression = require("compression");
 const express = require("express");
 const morgan = require("morgan");
-const { withSSRContext } = require("aws-amplify");
+
+const path = require("path");
+require("dotenv").config();
 
 installGlobals();
 
@@ -38,50 +38,17 @@ app.all(
         purgeRequireCache();
 
         return createRequestHandler({
-          async getLoadContext(req, res) {
+          /* async getLoadContext(req, res) {
             // this becomes the loader context
-            try {
-              const SSR = withSSRContext({ req });
-
-              const {
-                idToken: {
-                  payload: { name, email },
-                },
-                accessToken: { jwtToken },
-              } = await SSR.Auth.currentSession().catch((err) =>
-                console.log("CURRENT_SESSION ERROR : ", err)
-              );
-
-              return { user: { name, email }, jwtToken };
-            } catch (error) {
-              console.log(error);
-            }
-          },
-
+          }, */
           build: require(BUILD_DIR),
           mode: process.env.NODE_ENV,
         })(req, res, next);
       }
     : createRequestHandler({
-        async getLoadContext(req, res) {
+        /* async getLoadContext(req, res) {
           // this becomes the loader context
-          try {
-            const SSR = withSSRContext({ req });
-
-            const {
-              idToken: {
-                payload: { name, email },
-              },
-              accessToken: { jwtToken },
-            } = await SSR.Auth.currentSession().catch((err) =>
-              console.log("CURRENT_SESSION ERROR : ", err)
-            );
-
-            return { user: { name, email }, jwtToken };
-          } catch (error) {
-            console.log(error);
-          }
-        },
+        }, */
         build: require(BUILD_DIR),
         mode: process.env.NODE_ENV,
       })

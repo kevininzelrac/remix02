@@ -1,4 +1,5 @@
 import { useLoaderData, useNavigation } from "@remix-run/react";
+import { withSSRContext, Auth } from "aws-amplify";
 import { getPage } from "~/appsync.server";
 import styles from "~/styles/page.css";
 

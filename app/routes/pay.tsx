@@ -3,10 +3,15 @@ import { useLoaderData, Outlet } from "@remix-run/react";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import { useState } from "react";
-import { createPaymentIntent } from "~/pay.server";
+import { createPaymentIntent } from "../pay.server";
+import { getUser } from "../appsync.server";
 
-export const loader: LoaderFunction = async ({ context }: LoaderArgs) => {
-  const { user } = context;
+export const loader: LoaderFunction = async ({
+  request,
+  context,
+}: LoaderArgs) => {
+  //const { user } = context;
+  const { user }: any = await getUser({ request });
   if (!user) return redirect("/");
   return await createPaymentIntent();
 };

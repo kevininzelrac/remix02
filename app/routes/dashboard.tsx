@@ -1,9 +1,10 @@
 import { redirect } from "@remix-run/node";
 import { useFetcher, useLoaderData } from "@remix-run/react";
+import { getUser } from "../appsync.server";
 
-export const loader = async ({ context }: any) => {
-  const { user } = context;
-
+export const loader = async ({ request, context }: any) => {
+  //const { user } = context;
+  const { user }: any = await getUser({ request });
   if (!user) {
     return redirect("/signin");
   }

@@ -1,22 +1,26 @@
-import { Auth } from "@aws-amplify/auth";
 import { withSSRContext } from "aws-amplify";
 
-/* export const getUser = async ({ request }: any) => {
-  const SSR = withSSRContext({ req: request });
+export const getUser = async ({ request }: any) => {
+  const req = {
+    headers: {
+      cookie: request.headers.get("Cookie"),
+    },
+  };
+  const { Auth } = withSSRContext({ req });
   try {
     const {
       idToken: {
         payload: { name, email },
       },
       accessToken: { jwtToken },
-    } = await SSR.Auth.currentSession();
-    return { jwtToken, user: { name, email } };
+    } = await Auth.currentSession();
+    return { user: { name, email }, jwtToken };
   } catch (e) {
     console.log(e);
-    return { jwtToken: null, user: null };
+    return { user: "", jwtToken: "" };
   }
 };
- */
+
 export const signUp = async ({ request, formData }: any) => {
   const { username, email, password }: any = Object.fromEntries(formData);
   const SSR = withSSRContext({ req: request });
@@ -52,6 +56,7 @@ export const signIn = async ({ request, formData }: any) => {
 };
 
 export const signOut = async ({ request }: any) => {
+  const SSR = withSSRContext({ req: request });
   /********** PARSE COOKIE *************/
   const cookie: string | null = request.headers.get("Cookie");
   const pairs: any = cookie?.split(";");
@@ -69,7 +74,7 @@ export const signOut = async ({ request }: any) => {
     );
   });
 
-  await Auth.signOut();
+  await SSR.Auth.signOut();
   return { headers };
 };
 
