@@ -1,18 +1,16 @@
-import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
+import { getIndex } from "~/appsync.server";
 
-export async function loader() {
-  const response = { title: "Home", content: "Bienvenue sur la page de Home" };
-  return json(response);
-}
+export const loader = async ({ request }: any) => {
+  return await getIndex(request);
+};
 
 export default function Index() {
-  const { title, content } = useLoaderData();
-
+  const { label, content } = useLoaderData();
   return (
     <main>
-      <h2>{title}</h2>
-      <section>{content}</section>
+      <h2>{label}</h2>
+      <section>{content + " " + label}</section>
     </main>
   );
 }

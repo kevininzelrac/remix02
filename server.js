@@ -1,11 +1,12 @@
 const serverlessExpress = require("@vendia/serverless-express");
-const path = require("path");
-
 const { createRequestHandler } = require("@remix-run/express");
 const { installGlobals } = require("@remix-run/node");
 const compression = require("compression");
 const express = require("express");
 const morgan = require("morgan");
+
+const path = require("path");
+require("dotenv").config();
 
 installGlobals();
 
@@ -37,11 +38,17 @@ app.all(
         purgeRequireCache();
 
         return createRequestHandler({
+          /* async getLoadContext(req, res) {
+            // this becomes the loader context
+          }, */
           build: require(BUILD_DIR),
           mode: process.env.NODE_ENV,
         })(req, res, next);
       }
     : createRequestHandler({
+        /* async getLoadContext(req, res) {
+          // this becomes the loader context
+        }, */
         build: require(BUILD_DIR),
         mode: process.env.NODE_ENV,
       })
@@ -51,7 +58,9 @@ exports.handler = serverlessExpress({ app });
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
-  console.log(`Express server listening on port ${port}`);
+  console.log(
+    ` 🚀 Express server listening on port ${port} - http://localhost:${port}`
+  );
 });
 
 function purgeRequireCache() {
