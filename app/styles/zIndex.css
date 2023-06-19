@@ -1,0 +1,12 @@
+body {
+  z-index: 0;
+}
+nav {
+  z-index: 1;
+}
+dialog {
+  z-index: 2;
+}
+footer {
+  z-index: 1;
+}
