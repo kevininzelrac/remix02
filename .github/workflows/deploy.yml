@@ -2,7 +2,7 @@ name: AWS Build and Deploy
 on:
   push:
     branches:
-      - pop
+      - prod
 
 jobs:
   Build-Deploy:
@@ -21,7 +21,10 @@ jobs:
         run: npm install
 
       - name: Building project
-        run: npm run build && npm prune --omit=dev
+        run: remix build
+
+      - name: Delete devDependencies
+        run: remix build && npm prune --omit=dev
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1-node16
@@ -33,9 +36,20 @@ jobs:
       - name: Deploy to S3 bucket
         run: aws s3 sync ./public/ s3://${{ secrets.S3_BUCKET_NAME }} --delete
 
+      - name: Create .env file with GitHub secrets
+        run: |
+          echo "AWS_REGION=${{ secrets.AWS_REGION }}" >> .env
+          echo "AWS_APPSYNC_GRAPHQLENDPOINT=${{ secrets.AWS_APPSYNC_GRAPHQLENDPOINT }}" >> .env
+          echo "AWS_APPSYNC_KEY=${{ secrets.AWS_APPSYNC_KEY }}" >> .env
+          echo "AWS_APPSYNC_AUTHENTICATIONTYPE=${{ secrets.AWS_APPSYNC_AUTHENTICATIONTYPE }}" >> .env
+          echo "USER_POOL_ID=${{ secrets.USER_POOL_ID }}" >> .env
+          echo "USER_POOL_WEB_CLIENT_ID=${{ secrets.USER_POOL_WEB_CLIENT_ID }}" >> .env
+          echo "STRIPE_PUBLIC_KEY=${{ secrets.STRIPE_PUBLIC_KEY }}" >> .env
+          echo "STRIPE_SECRET_KEY=${{ secrets.STRIPE_SECRET_KEY }}" >> .env
+
       - name: Deploy backend to Lambda
         run: |
-          zip -r function.zip build node_modules server.js tsconfig.json
+          zip -r function.zip build node_modules server.js .env
           aws lambda update-function-code --function-name ${{ secrets.LAMBDA_FUNCTION_NAME }} --zip-file fileb://function.zip --publish
 
       - name: Wait for Lambda function update to complete
