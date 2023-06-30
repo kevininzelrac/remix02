@@ -1,0 +1,9 @@
+query getPost($label: String!) {
+  getPost(label: $label) {
+    label
+    content
+    children {
+      label
+    }
+  }
+}

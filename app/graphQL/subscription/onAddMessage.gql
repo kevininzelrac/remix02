@@ -1,0 +1,10 @@
+subscription onAddMessage($to: String!) {
+  onAddMessage(to: $to) {
+    date
+    from
+    id
+    message
+    status
+    to
+  }
+}

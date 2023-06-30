@@ -6,31 +6,40 @@ import {
   LiveReload,
   useLoaderData,
   ScrollRestoration,
+  useNavigation,
 } from "@remix-run/react";
-import { Amplify } from "aws-amplify";
+import Nav from "./components/nav/nav";
+import Footer from "./components/footer/footer";
+import getNav from "./graphQL/query/getNav.gql";
+import awsconfig from "./services/awsconfig";
+import { getSession } from "./sessions";
 
+import { API, Amplify } from "aws-amplify";
 Amplify.configure(awsconfig);
 
 import mainStyles from "~/styles/index.css";
 import navStyles from "~/styles/nav.css";
 import modalStyles from "~/styles/modal.css";
 import zIndexStyles from "~/styles/zIndex.css";
-export let links = () => {
-  return [
-    { rel: "stylesheet", href: mainStyles },
-    { rel: "stylesheet", href: navStyles },
-    { rel: "stylesheet", href: modalStyles },
-    { rel: "stylesheet", href: zIndexStyles },
-  ];
-};
 
-import Nav from "./components/nav/nav";
-import { getNav, getUser } from "./appsync.server";
-import Footer from "./components/footer/footer";
-import awsconfig from "./awsconfig";
+export let links = () => [
+  { rel: "stylesheet", href: mainStyles },
+  { rel: "stylesheet", href: navStyles },
+  { rel: "stylesheet", href: modalStyles },
+  { rel: "stylesheet", href: zIndexStyles },
+];
 
 export const loader = async ({ request }: any) => {
-  const ENV = {
+  const session = await getSession(request.headers.get("Cookie"));
+  const user = session.get("user");
+
+  const { data }: any = await API.graphql({
+    query: getNav,
+    variables: { category: "" },
+  });
+  const posts = data.getNav;
+
+  const env = {
     AWS_REGION: process.env.AWS_REGION,
     AWS_APPSYNC_GRAPHQLENDPOINT: process.env.AWS_APPSYNC_GRAPHQLENDPOINT,
     AWS_APPSYNC_KEY: process.env.AWS_APPSYNC_KEY,
@@ -40,13 +49,13 @@ export const loader = async ({ request }: any) => {
     STRIPE_PUBLIC_KEY: process.env.STRIPE_PUBLIC_KEY,
     STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
   };
-  const { user }: any = await getUser({ request });
-  const posts = await getNav(request);
-  return { ENV, user, posts };
+
+  return { env, user, posts };
 };
 
 export default function App() {
-  const { ENV, user, posts }: any = useLoaderData();
+  const { env, user, posts }: any = useLoaderData();
+  const navigation = useNavigation();
 
   return (
     <html lang="en">
@@ -62,16 +71,24 @@ export default function App() {
           <small>0.1.17</small>
         </h1>
         <Nav data={posts} user={user} />
+        {/* <main
+        style={{
+            animationName:
+              navigation.state === "idle" ? "slideDown" : "slideUp",
+          }}
+        > */}
         <Outlet />
+        {/* </main> */}
+
         <ScrollRestoration />
         <script
           dangerouslySetInnerHTML={{
-            __html: `window.ENV = ${JSON.stringify(ENV)}`,
+            __html: `window.env = ${JSON.stringify(env)}`,
           }}
         />
         <Scripts />
         <LiveReload />
-        <Footer />
+        {/* <Footer /> */}
       </body>
     </html>
   );

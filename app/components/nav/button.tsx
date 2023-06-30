@@ -1,12 +1,11 @@
-import { NavLink } from "@remix-run/react";
-//import { path } from "~/utils/path";
+import { NavLink, useLocation } from "@remix-run/react";
 
-export default function Button({ children, to, state }: any) {
+export default function Button({ children, to }: any) {
+  let { pathname } = useLocation();
   return (
     <NavLink
-      //to={to === "Home" ? "/" : path(to)}
       to={to === "Home" ? "/" : to}
-      state={state}
+      state={pathname}
       prefetch="intent"
       className={({ isActive, isPending }) =>
         isPending ? "pending" : isActive ? "active" : ""
