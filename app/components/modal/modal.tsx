@@ -1,4 +1,4 @@
-import { useNavigate, useSearchParams } from "@remix-run/react";
+import { useNavigate } from "@remix-run/react";
 import { useState } from "react";
 
 export default function Modal({ children }: any) {

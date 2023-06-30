@@ -1,0 +1,14 @@
+query getNav($category: String) {
+  getNav(category: $category) {
+    label
+    type
+    children {
+      label
+      type
+      children {
+        label
+        type
+      }
+    }
+  }
+}

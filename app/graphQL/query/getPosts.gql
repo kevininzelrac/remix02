@@ -1,0 +1,12 @@
+query MyQuery {
+  getPosts {
+    posts {
+      author
+      category
+      content
+      date
+      label
+      type
+    }
+  }
+}

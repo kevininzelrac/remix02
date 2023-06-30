@@ -1,6 +1,6 @@
 import { LoaderFunction, LoaderArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import { retrievePaymentIntent } from "~/pay.server";
+import { retrievePaymentIntent } from "~/services/pay.server";
 
 export const loader: LoaderFunction = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);

@@ -1,0 +1,16 @@
+query getPostsByCategory($category: String, $limit: Int, $nextToken: String) {
+  getPostsByCategory(
+    category: $category
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    posts {
+      label
+      category
+      author
+      date
+      content
+    }
+    nextToken
+  }
+}

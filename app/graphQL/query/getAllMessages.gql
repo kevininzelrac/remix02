@@ -1,0 +1,10 @@
+query getAllMessages($from: String!) {
+  getAllMessages(from: $from) {
+    id
+    date
+    from
+    to
+    message
+    status
+  }
+}

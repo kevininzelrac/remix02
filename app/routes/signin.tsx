@@ -1,37 +1,26 @@
-import { redirect } from "@remix-run/node";
-import { Link, useFetcher } from "@remix-run/react";
-import { signIn } from "~/appsync.server";
+import type { ActionArgs } from "@remix-run/node";
+import { Form } from "@remix-run/react";
+import { SignIn } from "~/services/auth.server";
 
-export const action = async ({ request }: any) => {
-  const formData = await request.formData();
-
-  const { headers }: any = await signIn({ request, formData });
-  return redirect("/", { headers });
+export const action = async ({ request }: ActionArgs) => {
+  return await SignIn({ request });
 };
 
-export default function SignIn() {
-  const fetcher = useFetcher();
-  const error = fetcher.data?.error;
-  //const name = fetcher?.data?.attributes?.name;
-
+export default function Login() {
   return (
     <>
-      <div>
-        <span>Sign In</span> • <Link to="/signup">Sign Up</Link>
-      </div>
-
-      <fetcher.Form method="post">
-        {error && <span className="error">{error}</span>}
-        <fieldset>
-          <label>email</label>
-          <input autoFocus type="text" name="username" />
-        </fieldset>
-        <fieldset>
-          <label>Password</label>
-          <input type="password" name="password" />
-        </fieldset>
-        <button type="submit">Sign In</button>
-      </fetcher.Form>
+      <Form method="POST">
+        <div>
+          <p>Please sign in</p>
+        </div>
+        <label>
+          Username: <input type="text" name="username" />
+        </label>
+        <label>
+          Password: <input type="password" name="password" />
+        </label>
+        <button type="submit">Submit</button>
+      </Form>
     </>
   );
 }
