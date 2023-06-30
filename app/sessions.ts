@@ -11,5 +11,6 @@ export const { getSession, commitSession, destroySession } =
       sameSite: "strict",
       secrets: ["s3cret1"],
       //secure: process.env.NODE_ENV === "production",
+      secure: true,
     },
   });
