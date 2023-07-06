@@ -13,8 +13,11 @@ import {
   useLoaderData,
   useRevalidator,
 } from "@remix-run/react";
-import { API, GraphQLSubscription } from "@aws-amplify/api";
 import { Suspense, useEffect, useRef } from "react";
+
+import { API, Amplify } from "aws-amplify";
+import { GraphQLSubscription } from "@aws-amplify/api";
+
 import getAllMessages from "../graphQL/query/getAllMessages.gql";
 import addMessage from "../graphQL/mutation/addMessage.gql";
 import onAddMessage from "../graphQL/subscription/onAddMessage.gql";
@@ -28,17 +31,21 @@ export const loader: LoaderFunction = async ({ request }: LoaderArgs) => {
   const idToken = session.get("idToken");
   const user = session.get("user");
 
+  const awsconfig: any = {
+    aws_appsync_graphqlEndpoint: process.env.AWS_APPSYNC_GRAPHQLENDPOINT,
+  };
+
   const data: any = API.graphql({
     query: getAllMessages,
     variables: { from: user.name },
     authMode: "AWS_LAMBDA",
     authToken: idToken,
   });
-
   return defer({
     idToken: await idToken,
     user: await user,
     data,
+    awsconfig,
   });
 };
 
@@ -57,7 +64,8 @@ export let action: ActionFunction = async ({ request }: ActionArgs) => {
 };
 
 export default function Messenger() {
-  const { idToken, user, data }: any = useLoaderData<typeof loader>();
+  const { awsconfig, idToken, user, data }: any =
+    useLoaderData<typeof loader>();
   const revalidator = useRevalidator();
   const fetcher = useFetcher();
   let isIdle = (fetcher.state = "idle");
@@ -67,6 +75,7 @@ export default function Messenger() {
     isIdle && formRef.current?.reset();
   }, [fetcher.data]);
 
+  Amplify.configure(awsconfig);
   useEffect(() => {
     (async () => {
       const sub = API.graphql<GraphQLSubscription<message>>({
