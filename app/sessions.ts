@@ -8,9 +8,9 @@ export const { getSession, commitSession, destroySession } =
       httpOnly: true,
       //maxAge: 24 * 60 * 60,
       path: "/",
-      sameSite: "strict",
+      sameSite: "lax",
       secrets: ["s3cret1"],
       //secure: process.env.NODE_ENV === "production",
-      secure: true,
+      //secure: true,
     },
   });
