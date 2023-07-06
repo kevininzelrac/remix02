@@ -2,7 +2,7 @@ import {
   CognitoIdentityProviderClient,
   AdminInitiateAuthCommand,
 } from "@aws-sdk/client-cognito-identity-provider";
-import { json, redirect } from "@remix-run/node";
+import { LoaderArgs, json, redirect } from "@remix-run/node";
 import { CognitoJwtVerifier } from "aws-jwt-verify";
 import { commitSession, destroySession, getSession } from "~/sessions";
 
@@ -74,4 +74,30 @@ export const RefreshToken = async (refreshToken: any) => {
     console.log(err);
     return false;
   }
+};
+
+export const isLoggedIn = async ({ request }: any) => {
+  const session = await getSession(request.headers.get("Cookie"));
+  if (!session.has("idToken")) throw redirect("/signin");
+  const verifiedToken: any = await verifyToken(session.get("idToken"));
+  if (!verifiedToken) {
+    const newIdToken = await RefreshToken(session.get("refreshToken"));
+    if (!newIdToken) {
+      console.log("Invalid Token");
+      throw redirect("/signin", {
+        headers: {
+          "Set-Cookie": await destroySession(session),
+        },
+      });
+    }
+    console.log("Refreshed Token");
+    session.set("idToken", newIdToken);
+    throw redirect(request.url, {
+      headers: {
+        "Set-Cookie": await commitSession(session),
+      },
+    });
+  }
+  console.log("Valid Token");
+  return null;
 };
