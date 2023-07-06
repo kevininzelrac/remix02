@@ -1,5 +1,5 @@
 import { LoaderArgs, LoaderFunction, defer } from "@remix-run/node";
-import { Await, useLoaderData } from "@remix-run/react";
+import { Await, useLoaderData, useNavigation } from "@remix-run/react";
 import { API } from "aws-amplify";
 import { Suspense } from "react";
 import getPost from "../graphQL/query/getPost.gql";
@@ -17,16 +17,22 @@ export const loader: LoaderFunction = async ({ params }: LoaderArgs) => {
 
 export default function Post() {
   const { data } = useLoaderData<typeof loader>();
+  const navigation = useNavigation();
 
   return (
     <main>
       <Suspense fallback={<div className="loader"></div>}>
         <Await resolve={data} errorElement={<p>Error loading Page !</p>}>
           {({ data: { getPost } }) => (
-            <>
+            <main
+              style={{
+                animationName:
+                  navigation.state === "idle" ? "slideDown" : "slideUp",
+              }}
+            >
               <h2>{getPost.label}</h2>
               <section>{getPost.content}</section>
-            </>
+            </main>
           )}
         </Await>
       </Suspense>
