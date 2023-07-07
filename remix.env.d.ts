@@ -2,6 +2,22 @@
 /// <reference types="@remix-run/node" />
 
 interface Window {
-  //__INITIAL_STATE__: any;
-  ENV: any;
+  env: any;
+}
+
+interface post {
+  label: string;
+  category: string;
+  author: string;
+  date: string;
+  content: string;
+}
+
+interface message {
+  id: string;
+  date: number;
+  from: String;
+  to: String;
+  message: String;
+  status: Boolean;
 }
