@@ -2,13 +2,12 @@ import {
   CognitoIdentityProviderClient,
   AdminInitiateAuthCommand,
 } from "@aws-sdk/client-cognito-identity-provider";
-import { LoaderArgs, json, redirect } from "@remix-run/node";
+import { json, redirect } from "@remix-run/node";
 import { CognitoJwtVerifier } from "aws-jwt-verify";
 import { commitSession, destroySession, getSession } from "~/sessions";
 
 const cognitoClient = new CognitoIdentityProviderClient({
-  //region: process.env.AWS_REGION,
-  region: "eu-north-1",
+  region: process.env.USER_POOL_REGION,
 });
 
 export const SignIn = async ({ request }: any) => {
@@ -84,14 +83,12 @@ export const isLoggedIn = async ({ request }: any) => {
   if (!verifiedToken) {
     const newIdToken = await RefreshToken(session.get("refreshToken"));
     if (!newIdToken) {
-      console.log("Invalid Token");
       throw redirect("/signin", {
         headers: {
           "Set-Cookie": await destroySession(session),
         },
       });
     }
-    console.log("Refreshed Token");
     session.set("idToken", newIdToken);
     throw redirect(request.url, {
       headers: {
@@ -99,6 +96,5 @@ export const isLoggedIn = async ({ request }: any) => {
       },
     });
   }
-  console.log("Valid Token");
   return null;
 };
