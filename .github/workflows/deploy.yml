@@ -42,10 +42,12 @@ jobs:
           echo "AWS_APPSYNC_GRAPHQLENDPOINT=${{ secrets.AWS_APPSYNC_GRAPHQLENDPOINT }}" >> .env
           echo "AWS_APPSYNC_KEY=${{ secrets.AWS_APPSYNC_KEY }}" >> .env
           echo "AWS_APPSYNC_AUTHENTICATIONTYPE=${{ secrets.AWS_APPSYNC_AUTHENTICATIONTYPE }}" >> .env
+          echo "USER_POOL_REGION=${{ secrets.USER_POOL_REGION }}" >> .env
           echo "USER_POOL_ID=${{ secrets.USER_POOL_ID }}" >> .env
           echo "USER_POOL_WEB_CLIENT_ID=${{ secrets.USER_POOL_WEB_CLIENT_ID }}" >> .env
           echo "STRIPE_PUBLIC_KEY=${{ secrets.STRIPE_PUBLIC_KEY }}" >> .env
           echo "STRIPE_SECRET_KEY=${{ secrets.STRIPE_SECRET_KEY }}" >> .env
+          echo "SESSION_SECRET=${{ secrets.SESSION_SECRET }}" >> .env
 
       - name: Deploy backend to Lambda
         run: |
