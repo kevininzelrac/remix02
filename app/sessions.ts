@@ -1,4 +1,4 @@
-import { createCookieSessionStorage } from "@remix-run/node"; // or cloudflare/deno
+import { createCookieSessionStorage } from "@remix-run/node";
 
 export const { getSession, commitSession, destroySession } =
   createCookieSessionStorage({
@@ -9,8 +9,7 @@ export const { getSession, commitSession, destroySession } =
       //maxAge: 24 * 60 * 60,
       path: "/",
       sameSite: "lax",
-      secrets: ["s3cret1"],
-      //secure: process.env.NODE_ENV === "production",
-      //secure: true,
+      secrets: [process.env.SESSION_SECRET as string],
+      secure: process.env.NODE_ENV === "production",
     },
   });
