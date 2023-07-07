@@ -7,7 +7,8 @@ import { CognitoJwtVerifier } from "aws-jwt-verify";
 import { commitSession, destroySession, getSession } from "~/sessions";
 
 const cognitoClient = new CognitoIdentityProviderClient({
-  region: process.env.AWS_REGION,
+  //region: process.env.AWS_REGION,
+  region: "eu-north-1",
 });
 
 export const SignIn = async ({ request }: any) => {
