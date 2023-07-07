@@ -1,10 +1,18 @@
-import { redirect } from "@remix-run/node";
 import { Link, useFetcher } from "@remix-run/react";
-import { signUp } from "~/appsync.server";
+import { redirect } from "@remix-run/node";
+import { Auth } from "aws-amplify";
 
 export let action = async ({ request }: any) => {
   const formData = await request.formData();
-  await signUp({ request, formData });
+  const { username, email, password }: any = Object.fromEntries(formData);
+  const { user } = await Auth.signUp({
+    username: email,
+    password,
+    attributes: {
+      name: username,
+      email,
+    },
+  });
   return redirect("/signin");
 };
 

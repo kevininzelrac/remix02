@@ -8,15 +8,14 @@ import styles from "~/styles/page.css";
 export let links = () => [{ rel: "stylesheet", href: styles }];
 
 export const loader: LoaderFunction = async ({ params }: LoaderArgs) => {
-  return defer({
-    data: API.graphql({
-      query: getPost,
-      variables: { label: params.page },
-    }),
+  const data: any = API.graphql({
+    query: getPost,
+    variables: { label: params.post },
   });
+  return defer({ data });
 };
 
-export default function Page() {
+export default function Post() {
   const { data } = useLoaderData<typeof loader>();
   const navigation = useNavigation();
 

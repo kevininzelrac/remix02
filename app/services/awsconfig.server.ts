@@ -1,27 +1,36 @@
+const awsconfig = {
+  aws_appsync_region: process.env.AWS_APPSYNC_REGION,
+  aws_appsync_graphqlEndpoint: process.env.AWS_APPSYNC_GRAPHQLENDPOINT,
+  aws_appsync_apiKey: process.env.AWS_APPSYNC_KEY,
+  aws_appsync_authenticationType: "API_KEY",
+  ssr: true,
+};
+
+/*
 function isBrowser() {
   return typeof window !== "undefined";
 }
 
 const awsconfig = {
   aws_appsync_region: isBrowser()
-    ? window.ENV.AWS_REGION
+    ? window.env.AWS_REGION
     : process.env.AWS_REGION,
   aws_appsync_graphqlEndpoint: isBrowser()
-    ? window.ENV.AWS_APPSYNC_GRAPHQLENDPOINT
+    ? window.env.AWS_APPSYNC_GRAPHQLENDPOINT
     : process.env.AWS_APPSYNC_GRAPHQLENDPOINT,
   aws_appsync_apiKey: isBrowser()
-    ? window.ENV.AWS_APPSYNC_KEY
+    ? window.env.AWS_APPSYNC_KEY
     : process.env.AWS_APPSYNC_KEY,
   aws_appsync_authenticationType: "API_KEY",
 
   Auth: {
     authenticationFlowType: "USER_PASSWORD_AUTH",
-    region: isBrowser() ? window.ENV.AWS_REGION : process.env.AWS_REGION,
+    region: isBrowser() ? window.env.AWS_REGION : process.env.AWS_REGION,
     userPoolId: isBrowser()
-      ? window.ENV.USER_POOL_ID
+      ? window.env.USER_POOL_ID
       : process.env.USER_POOL_ID,
     userPoolWebClientId: isBrowser()
-      ? window.ENV.USER_POOL_WEB_CLIENT_ID
+      ? window.env.USER_POOL_WEB_CLIENT_ID
       : process.env.USER_POOL_WEB_CLIENT_ID,
     //cookieStorage: {
     //  domain: "localhost",
@@ -33,6 +42,6 @@ const awsconfig = {
     //},
   },
   ssr: true,
-};
+}; */
 
 export default awsconfig;

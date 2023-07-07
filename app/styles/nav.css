@@ -1,7 +1,4 @@
 @media (min-width: 770px) {
-  .goBack {
-    display: none;
-  }
   nav {
     position: sticky;
     top: 0;
@@ -74,9 +71,9 @@
     background-color: var(--blue);
   }
 
-  nav div > a {
+  /* nav div > a {
     pointer-events: none;
-  }
+  } */
   nav div > a:hover {
     background-color: black;
   }
@@ -90,27 +87,23 @@
     z-index: 1;
     position: fixed;
     display: flex;
-    justify-content: center;
     flex-direction: row;
-    width: auto;
+    justify-content: space-between;
+    align-items: center;
     width: 100%;
-    height: 40px;
+    height: auto;
     bottom: 0;
     margin: 0;
     padding: 0;
   }
-
   nav a,
-  nav > div {
-    position: relative;
+  nav div {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 100%;
-    height: 100%;
-    padding: 0;
     margin: 0;
-    text-align: center;
+    width: 100%;
+    height: 40px;
     color: ghostwhite;
     font-size: 0.6rem;
     font-weight: 100;
@@ -118,14 +111,37 @@
     background-color: var(--anthracite);
   }
 
-  nav div span {
+  /* nav span {
     position: absolute;
     display: none;
-    top: 100%;
-    flex-direction: column;
-    background-color: var(--anthracite);
+    flex-direction: row;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+    margin-bottom: 40px;
+    padding: 0;
+    height: 100%;
+  } */
+
+  nav span {
+    position: absolute;
+    display: none;
+    flex-direction: row;
+    width: 100%;
+    height: auto;
+    bottom: 0;
+    left: 0;
+    margin-bottom: 40px;
+    padding: 0;
   }
 
+  nav div:hover > span {
+    display: flex;
+  }
+
+  nav a:hover {
+    background-color: black;
+  }
   nav a.pending {
     color: var(--blue);
   }
@@ -133,50 +149,10 @@
     background-color: var(--blue);
   }
 
-  nav div > a.pending {
-    color: var(--blue);
+  nav div > a:hover {
+    background-color: black;
   }
   nav div > a.active {
     background-color: black;
-  }
-
-  aside {
-    display: flex;
-    flex-direction: column;
-    justify-content: stretch;
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    background-color: var(--anthracite);
-    color: ghostwhite;
-  }
-  aside a,
-  aside .goBack {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 99%;
-    height: 3rem;
-    color: ghostwhite;
-    background-color: var(--anthracite);
-    border-bottom: 1px solid gainsboro;
-    box-shadow: none;
-    text-transform: uppercase;
-    font-size: 0.8rem;
-    cursor: pointer;
-  }
-  .goBack {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: fit-content;
-    height: 20px;
-    padding: 2px 5px;
-    background-color: var(--blue);
-    color: ghostwhite;
-    border-radius: 3px;
-    box-shadow: var(--shade02);
-    cursor: pointer;
   }
 }
