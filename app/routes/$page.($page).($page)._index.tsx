@@ -1,10 +1,17 @@
 import { LoaderArgs, LoaderFunction, defer } from "@remix-run/node";
-import { Await, useLoaderData, useNavigation } from "@remix-run/react";
+import {
+  Await,
+  useLoaderData,
+  useNavigation,
+  useRouteLoaderData,
+} from "@remix-run/react";
 import { API } from "aws-amplify";
 import { Suspense } from "react";
-import getPost from "../graphQL/query/getPost.gql";
-import styles from "~/styles/page.css";
+import getPost from "~/graphQL/query/getPost.gql";
+import ReadOnly from "~/components/slate/readOnly";
+import Edit from "~/components/slate/components/editButton";
 
+import styles from "~/styles/page.css";
 export let links = () => [{ rel: "stylesheet", href: styles }];
 
 export const loader: LoaderFunction = async ({ params }: LoaderArgs) => {
@@ -18,26 +25,29 @@ export const loader: LoaderFunction = async ({ params }: LoaderArgs) => {
 
 export default function Page() {
   const { data } = useLoaderData<typeof loader>();
+  const { user }: any = useRouteLoaderData("root");
   const navigation = useNavigation();
 
   return (
-    <main>
-      <Suspense fallback={<div className="loader"></div>}>
-        <Await resolve={data} errorElement={<p>Error loading Page !</p>}>
-          {({ data: { getPost } }) => (
-            <main
-              style={{
-                animationName:
-                  navigation.state === "idle" ? "slideDown" : "slideUp",
-              }}
-            >
-              <h2>{getPost.label}</h2>
-              <section>{getPost.content}</section>
-            </main>
-          )}
-        </Await>
-      </Suspense>
-    </main>
+    <Suspense fallback={<div className="loader"></div>}>
+      <Await resolve={data} errorElement={<p>Error loading Page !</p>}>
+        {({ data: { getPost } }) => (
+          <main
+            key={getPost.label}
+            style={{
+              animationName:
+                navigation.state === "idle" ? "slideDown" : "slideUp",
+            }}
+          >
+            <h2>{getPost.label}</h2>
+            {user && <Edit data={getPost} />}
+            <section className="slate">
+              <ReadOnly data={getPost.content} />
+            </section>
+          </main>
+        )}
+      </Await>
+    </Suspense>
   );
 }
 
