@@ -17,19 +17,17 @@ import { Suspense, useEffect, useRef } from "react";
 
 import { API, Amplify } from "aws-amplify";
 import { GraphQLSubscription } from "@aws-amplify/api";
+import { authorize } from "~/services/auth.server";
 
 import getAllMessages from "../graphQL/query/getAllMessages.gql";
 import addMessage from "../graphQL/mutation/addMessage.gql";
 import onAddMessage from "../graphQL/subscription/onAddMessage.gql";
-import { getSession } from "~/sessions";
 
 import styles from "~/styles/messenger.css";
 export let links: LinksFunction = () => [{ rel: "stylesheet", href: styles }];
 
 export const loader: LoaderFunction = async ({ request }: LoaderArgs) => {
-  const session = await getSession(request.headers.get("Cookie"));
-  const idToken = session.get("idToken");
-  const user = session.get("user");
+  const { idToken, user, headers }: any = await authorize(request);
 
   const awsconfig: any = {
     aws_appsync_graphqlEndpoint: process.env.AWS_APPSYNC_GRAPHQLENDPOINT,
@@ -41,26 +39,27 @@ export const loader: LoaderFunction = async ({ request }: LoaderArgs) => {
     authMode: "AWS_LAMBDA",
     authToken: idToken,
   });
-  return defer({
-    idToken: await idToken,
-    user: await user,
-    data,
-    awsconfig,
-  });
+  return defer(
+    {
+      idToken: await idToken,
+      user: await user,
+      data,
+      awsconfig,
+    },
+    { headers }
+  );
 };
 
 export let action: ActionFunction = async ({ request }: ActionArgs) => {
+  const { idToken, user, headers }: any = await authorize(request);
   const formData = await request.formData();
-  const session = await getSession(request.headers.get("Cookie"));
-  const idToken = session.get("idToken");
-
   const { data }: any = await API.graphql({
     query: addMessage,
     variables: Object.fromEntries(formData),
     authMode: "AWS_LAMBDA",
     authToken: idToken,
   });
-  return json(data);
+  return json({ data }, { headers });
 };
 
 export default function Messenger() {
