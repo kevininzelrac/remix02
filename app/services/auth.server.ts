@@ -70,31 +70,31 @@ export const RefreshToken = async (refreshToken: any) => {
     const { AuthenticationResult } = await cognitoClient.send(command);
     const { IdToken }: any = AuthenticationResult;
     return IdToken;
-  } catch (err: any) {
-    console.log(err);
+  } catch (error: any) {
+    console.log(error);
     return false;
   }
 };
 
-export const isLoggedIn = async ({ request }: any) => {
-  const session = await getSession(request.headers.get("Cookie"));
+export const authorize = async (request: any) => {
+  const session = await getSession(request?.headers.get("Cookie"));
   if (!session.has("idToken")) throw redirect("/signin");
-  const verifiedToken: any = await verifyToken(session.get("idToken"));
+
+  const verifiedToken = await verifyToken(session.get("idToken"));
   if (!verifiedToken) {
-    const newIdToken = await RefreshToken(session.get("refreshToken"));
-    if (!newIdToken) {
-      throw redirect("/signin", {
-        headers: {
-          "Set-Cookie": await destroySession(session),
-        },
-      });
-    }
-    session.set("idToken", newIdToken);
-    throw redirect(request.url, {
+    const idToken = await RefreshToken(session.get("refreshToken"));
+    session.set("idToken", idToken);
+
+    return {
+      idToken,
+      user: session.get("user"),
       headers: {
         "Set-Cookie": await commitSession(session),
       },
-    });
+    };
   }
-  return null;
+  return {
+    idToken: session.get("idToken"),
+    user: session.get("user"),
+  };
 };

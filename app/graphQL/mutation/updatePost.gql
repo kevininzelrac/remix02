@@ -1,0 +1,6 @@
+mutation UpdatePost($SK: String!, $content: String!) {
+  updatePost(SK: $SK, content: $content) {
+    label
+    content
+  }
+}

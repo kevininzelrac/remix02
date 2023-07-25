@@ -1,23 +1,22 @@
-import { useState, useCallback, useEffect, createContext } from "react";
+import { useState, useEffect } from "react";
 
-export const InfiniteScrollContext = createContext({});
-
-export default function InfiniteScroll({ children, data, fetcher }: any) {
-  const [posts, setPosts]: any = useState(data.posts);
-  const [nextToken, setNextToken]: any = useState(data.nextToken);
+export default function InfiniteScroll({
+  children,
+  loaderData,
+  fetcher,
+  fetcherData,
+  clientRef,
+}: any) {
+  const [posts, setPosts]: any = useState(loaderData?.posts);
+  const [nextToken, setNextToken]: any = useState(loaderData?.nextToken);
   const [scrollPosition, setScrollPosition] = useState(0);
   const [clientHeight, setClientHeight] = useState(0);
   const [height, setHeight] = useState(null);
   const [shouldFetch, setShouldFetch] = useState(true);
 
-  const divHeight = useCallback(
-    (node: any) => {
-      if (node !== null) {
-        setHeight(node.getBoundingClientRect().height);
-      }
-    },
-    [posts.length]
-  );
+  useEffect(() => {
+    setHeight(clientRef.current.getBoundingClientRect().height);
+  }, [posts.length]);
 
   useEffect(() => {
     const scrollListener = () => {
@@ -37,6 +36,21 @@ export default function InfiniteScroll({ children, data, fetcher }: any) {
   }, []);
 
   useEffect(() => {
+    if (fetcher.data && fetcherData.nextToken === nextToken) {
+      setShouldFetch(false);
+      return;
+    }
+
+    if (fetcher.data && fetcherData?.nextToken !== nextToken) {
+      setNextToken(fetcherData?.nextToken);
+      fetcherData?.posts.map((newPosts: any) =>
+        setPosts((prev: any) => [...prev, newPosts])
+      );
+      setShouldFetch(true);
+    }
+  }, [fetcher?.data]);
+
+  useEffect(() => {
     if (!shouldFetch || !height) return;
     if (clientHeight + scrollPosition - 180 < height) return;
 
@@ -49,27 +63,5 @@ export default function InfiniteScroll({ children, data, fetcher }: any) {
     setShouldFetch(false);
   }, [clientHeight, scrollPosition, fetcher]);
 
-  useEffect(() => {
-    if (fetcher.data && fetcher.data?.getPostsByType.nextToken === nextToken) {
-      setShouldFetch(false);
-      return;
-    }
-
-    if (fetcher.data && fetcher.data?.getPostsByType.nextToken !== nextToken) {
-      setNextToken(fetcher.data?.getPostsByType.nextToken);
-      fetcher.data?.getPostsByType.posts.map((newPosts: any) =>
-        setPosts((prev: any) => [...prev, newPosts])
-      );
-      setShouldFetch(true);
-    }
-  }, [fetcher.data]);
-
-  return (
-    <InfiniteScrollContext.Provider value={{ posts }}>
-      <section ref={divHeight}>
-        {children}
-        {fetcher.state === "submitting" && <div className="loader"></div>}
-      </section>
-    </InfiniteScrollContext.Provider>
-  );
+  return children(posts);
 }

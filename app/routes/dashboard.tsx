@@ -1,9 +1,8 @@
 import { useFetcher, useLoaderData } from "@remix-run/react";
-import { getSession } from "~/sessions";
+import { authorize } from "~/services/auth.server";
 
 export const loader = async ({ request }: any) => {
-  const session = await getSession(request.headers.get("Cookie"));
-  return session.get("user");
+  return await authorize(request);
 };
 
 export function ErrorBoundary({ error }: any) {
@@ -17,7 +16,7 @@ export function ErrorBoundary({ error }: any) {
 
 export default function Dashboard() {
   const fetcher = useFetcher();
-  const user = useLoaderData();
+  const { user } = useLoaderData();
 
   return (
     <main>

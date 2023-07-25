@@ -1,5 +1,6 @@
 query getPost($label: String!) {
   getPost(label: $label) {
+    SK
     label
     content
     children {
