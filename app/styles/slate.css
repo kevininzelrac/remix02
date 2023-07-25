@@ -1,0 +1,151 @@
+.slate > .toolbar {
+  margin-bottom: 10px;
+}
+.slate > .toolbar > button {
+  display: inline;
+  font-size: 0.4rem;
+  width: 50px;
+  height: 20px;
+}
+
+.slate .toolbar > button.active {
+  background-color: #336699;
+  color: ghostwhite;
+}
+
+/* .slate .left {
+  text-align: left;
+}
+.slate .right {
+  text-align: right;
+}
+.slate .center {
+  text-align: center;
+}
+.slate .justify {
+  text-align: justify;
+} */
+.slate .breakLine {
+  clear: both;
+}
+
+.slate > .draft {
+  border: 1px solid red;
+}
+
+/* 
+.slate .floatLeft {
+  float: left;
+}
+.slate .floatRight {
+  float: right;
+}
+.slate .clearBoth {
+  clear: both;
+}
+
+.slate .circle {
+  border-radius: 50%;
+  shape-outside: circle();
+}
+*/
+
+/* .slate .resize {
+  position: absolute;
+  width: 28px;
+  height: fit-content;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  user-select: none;
+  background-color: var(--anthracite);
+  color: ghostwhite;
+  z-index: 1;
+}
+.slate .resize div {
+  width: 23px;
+  height: fit-content;
+  text-align: right;
+  -webkit-user-select: none; 
+  -ms-user-select: none;
+  user-select: none;
+} */
+
+/* .slate .image {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-shadow: var(--shade01);
+  margin: 6px;
+  z-index: 1;
+}
+
+.slate .image img {
+  position: relative;
+  border-radius: inherit;
+  width: 100%;
+  height: 100%;
+  cursor: text;
+}
+
+.slate .image img:hover,
+.slate div iframe:hover {
+  opacity: 0.9;
+}
+
+.slate .youtube {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  width: fit-content;
+  height: fit-content;
+  max-width: 100%;
+}
+
+.slate .youtube iframe {
+  position: relative;
+  border-radius: inherit;
+  cursor: text;
+  border: none;
+} */
+
+/* VOID TOOLS */
+.slate .tools {
+  position: absolute;
+  width: fit-content;
+  height: fit-content;
+  top: -33px;
+  left: 0px;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  user-select: none;
+  background-color: var(--anthracite);
+  color: ghostwhite;
+  z-index: 1;
+}
+.slate .tools button {
+  position: relative;
+  cursor: pointer;
+  width: 28px;
+  height: 28px;
+  background-color: var(--anthracite);
+  color: ghostwhite;
+  font-size: 0.4rem;
+}
+/* .slate button.resize {
+  font-size: 0.4rem;
+} */
+.slate .tools button:hover,
+.slate .resize:hover {
+  background-color: black;
+}
+.slate .tools > button.active {
+  background: var(--gradient01);
+}
