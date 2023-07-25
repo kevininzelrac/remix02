@@ -4,8 +4,8 @@ export default function Button({ children, to }: any) {
   let { pathname } = useLocation();
   return (
     <NavLink
-      to={to === "Home" ? "/" : to}
-      state={pathname}
+      to={to}
+      state={{ pathname }}
       prefetch="intent"
       className={({ isActive, isPending }) =>
         isPending ? "pending" : isActive ? "active" : ""
