@@ -1,11 +1,12 @@
 /// <reference types="@remix-run/dev" />
 /// <reference types="@remix-run/node" />
 
-interface Window {
+/* interface Window {
   env: any;
-}
+} */
 
 interface post {
+  SK: string;
   label: string;
   category: string;
   author: string;
@@ -20,4 +21,8 @@ interface message {
   to: String;
   message: String;
   status: Boolean;
+}
+
+interface user {
+  name: string;
 }

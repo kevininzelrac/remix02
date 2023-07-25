@@ -5,6 +5,7 @@ import { GraphQLQuery } from "@aws-amplify/api";
 import getPostsByCategory from "../graphQL/query/getPostsByCategory.gql";
 
 import styles from "~/styles/blog.css";
+import Posts from "~/components/posts/posts";
 export let links = () => [{ rel: "stylesheet", href: styles }];
 
 export const loader: LoaderFunction = async ({ params }: LoaderArgs) => {
@@ -23,27 +24,7 @@ export default function Category() {
   return (
     <main>
       <h2>{category}</h2>
-
-      {getPostsByCategory.posts?.map(
-        ({ label, category, author, date, content }: post, index: number) => (
-          <article key={label}>
-            <img src={"https://picsum.photos/id/" + (index + 22) + "/100"} />
-            <section>
-              <header>
-                <h3>
-                  <Link to={label}>{label}</Link>
-                </h3>
-                <p>
-                  <Link to="#">{category}</Link>
-                  <span>{author}</span>
-                  <time>{new Date(date).toLocaleDateString()}</time>
-                </p>
-              </header>
-              <p>{content}</p>
-            </section>
-          </article>
-        )
-      )}
+      <Posts posts={getPostsByCategory.posts} />
     </main>
   );
 }

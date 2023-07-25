@@ -21,17 +21,20 @@ import mainStyles from "~/styles/index.css";
 import navStyles from "~/styles/nav.css";
 import modalStyles from "~/styles/modal.css";
 import zIndexStyles from "~/styles/zIndex.css";
+import slateStyles from "~/styles/slate.css";
+import { json } from "@remix-run/node";
 
 export let links = () => [
   { rel: "stylesheet", href: mainStyles },
   { rel: "stylesheet", href: navStyles },
   { rel: "stylesheet", href: modalStyles },
   { rel: "stylesheet", href: zIndexStyles },
+  { rel: "stylesheet", href: slateStyles },
 ];
 
 export const loader = async ({ request }: any) => {
   const session = await getSession(request.headers.get("Cookie"));
-  const user = session.get("user");
+  const user: user = session.get("user");
 
   const { data }: any = await API.graphql({
     query: getNav,
@@ -39,12 +42,11 @@ export const loader = async ({ request }: any) => {
   });
   const posts = data.getNav;
 
-  return { user, posts };
+  return json({ user, posts });
 };
 
 export default function App() {
-  const { user, posts }: any = useLoaderData();
-  const navigation = useNavigation();
+  const { user, posts } = useLoaderData<typeof loader>();
 
   return (
     <html lang="en">
@@ -61,10 +63,11 @@ export default function App() {
         </h1>
         <Nav data={posts} user={user} />
         <Outlet />
+        <Footer />
+
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
-        <Footer />
       </body>
     </html>
   );

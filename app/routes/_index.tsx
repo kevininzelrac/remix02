@@ -1,8 +1,20 @@
-import { Await, useLoaderData, useNavigation } from "@remix-run/react";
-import { LoaderArgs, LoaderFunction, defer } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
+
+export const loader = async () => {
+  return redirect("Home");
+};
+
+/* import {
+  Await,
+  useLoaderData,
+  useNavigation,
+  useRouteLoaderData,
+} from "@remix-run/react";
+import { LoaderFunction, defer } from "@remix-run/node";
 import { API } from "aws-amplify";
 import getPost from "../graphQL/query/getPost.gql";
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
+import Edit from "~/components/slate/editButton";
 
 import styles from "~/styles/page.css";
 export let links = () => [{ rel: "stylesheet", href: styles }];
@@ -18,52 +30,35 @@ export const loader: LoaderFunction = async () => {
 
 export default function Index() {
   const { data } = useLoaderData<typeof loader>();
+  const { user }: any = useRouteLoaderData("root");
+  const [edit, setEdit] = useState(false);
   const navigation = useNavigation();
 
   return (
-    <main>
-      <Suspense fallback={<div className="loader"></div>}>
-        <Await resolve={data} errorElement={<p>Error loading Index Page!</p>}>
-          {({ data: { getPost } }) => (
-            <main
-              style={{
-                animationName:
-                  navigation.state === "idle" ? "slideDown" : "slideUp",
-              }}
-            >
-              <h2>{getPost.label}</h2>
-              <section>{getPost.content}</section>
-              <br />
-              <h3>REMIX WEB APP</h3>
-              <br />
-              <p>
-                <strong>Frontent</strong> - <i>Server Side Rendering</i>
-              </p>
-              <p>CloudFront Distribution</p>
-              <p>S3 Bucket</p>
-              <br />
-              <p>
-                <strong>Backend</strong> - <i>Serverless Architecture</i>
-              </p>
-              <p>Lambda:Edge</p>
-              <p>GraphQL Queries / Mutations / Subscriptions</p>
-              <p>AppSync Schemas & JS Resolvers</p>
-              <p>DynamoDb</p>
-              <p>Cognito Authentication</p>
-              <br />
-              <p>
-                <strong>Deployment</strong> - <i>CI/CD pipeline</i>
-              </p>
-              <p>Github Actions</p>
-            </main>
-          )}
-        </Await>
-      </Suspense>
-    </main>
+    <Suspense fallback={<div className="loader"></div>}>
+      <Await resolve={data} errorElement={<p>Error loading Index Page!</p>}>
+        {({ data: { getPost } }) => (
+          <main
+            style={{
+              animationName:
+                navigation.state === "idle" ? "slideDown" : "slideUp",
+            }}
+          >
+            <h2>{getPost.label}</h2>
+
+            {user && <Edit data={getPost} />}
+            <section className="slate">
+              <TextEditor data={getPost} readOnly={true} />
+            </section>
+          </main>
+        )}
+      </Await>
+    </Suspense>
   );
 }
 
 import { isRouteErrorResponse, useRouteError } from "@remix-run/react";
+import TextEditor from "~/components/slate/editor";
 
 export function ErrorBoundary() {
   const error = useRouteError();
@@ -90,3 +85,4 @@ export function ErrorBoundary() {
     return <h3 style={{ color: "red" }}>Unknown Error</h3>;
   }
 }
+ */
