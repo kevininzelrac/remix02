@@ -1,9 +1,7 @@
 import { Link } from "@remix-run/react";
-import { InfiniteScrollContext } from "../infiniteScroll/infiniteScroll";
-import { useContext } from "react";
+import ReadOnly from "../slate/readOnly";
 
-export default function Posts() {
-  const { posts }: any = useContext(InfiniteScrollContext);
+export default function Posts({ posts }: any) {
   return (
     <>
       {posts?.map(
@@ -13,15 +11,15 @@ export default function Posts() {
             <section>
               <header>
                 <h3>
-                  <Link to={label}>{label}</Link>
+                  <Link to={"/Blog/" + category + "/" + label}>{label}</Link>
                 </h3>
                 <p>
-                  <Link to={category}>{category}</Link>
+                  <Link to={"/Blog/" + category}>{category}</Link>
                   <span>{author}</span>
                   <time>{new Date(date).toLocaleDateString()}</time>
                 </p>
               </header>
-              <p>{content}</p>
+              <ReadOnly data={content} />
             </section>
           </article>
         )
@@ -29,3 +27,27 @@ export default function Posts() {
     </>
   );
 }
+
+/* const Render = ({ content }: any) => {
+  const data = content?.includes("type")
+    ? JSON.parse(content)
+    : [
+        {
+          type: "paragraph",
+          textAlign: "left",
+          children: [{ text: content }],
+        },
+      ];
+  return (
+    <>
+      {data?.map(
+        ({ type, textAlign, children }: any, index: any) =>
+          type === "paragraph" && (
+            <p key={index} className={textAlign}>
+              {children?.map(({ text }: any) => text)}
+            </p>
+          )
+      )}
+    </>
+  );
+}; */
